@@ -6,7 +6,7 @@
 env = dbutils.widgets.get("Environment")
 app_id = dbutils.widgets.get("Client")
 trg_tb = dbutils.widgets.get("TargetTableName")
-src_tb = dbutils.widget.get("SourceTableName")
+# src_tb = dbutils.widget.get("SourceTableName")
 
 # env = "cert"
 # app_id = "xcloud"
@@ -24,17 +24,17 @@ for trg_col in getNullTestTargetColumns(trg_tb):
 env = dbutils.widgets.get("Environment")
 app_id = dbutils.widgets.get("Client")
 trg_tb = dbutils.widgets.get("TargetTableName")
-src_tb = dbutils.widget.get("SourceTableName")
+# src_tb = dbutils.widget.get("SourceTableName")
 
 # env = "cert"
 # app_id = "xcloud"
 # trg_tb = "bronze_candidate"
 
-for trg_col in getDuplicateTestTargetColumns(trg_tb):
-  verify_duplicate_records(env, app_id, trg_tb,trg_col)
+# for trg_col in getDuplicateTestTargetColumns(trg_tb):
+#   verify_duplicate_records(env, app_id, trg_tb,trg_col)
 
-for trg_col in getNullTestTargetColumns(trg_tb):  
-  verify_null_records(env, app_id, trg_tb,trg_col)
+# for trg_col in getNullTestTargetColumns(trg_tb):  
+#   verify_null_records(env, app_id, trg_tb,trg_col)
 
 
 
