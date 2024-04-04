@@ -1,12 +1,18 @@
 # Databricks notebook source
+# MAGIC %run ../utils/insert_ts
+
+# COMMAND ----------
+
+# MAGIC %run ../utils/util
+
+# COMMAND ----------
+
 from datetime import datetime
 
 def verify_duplicate_records(database_name, schema_name, table_name, trg_col):
-    # Constructing the fully qualified table name
+    
     full_table_name = f"{database_name}.{schema_name}.{table_name}"
     
-    exec_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
     query = f"""
         SELECT (CASE WHEN cnt = 0 THEN 'PASS' ELSE 'FAIL' END) AS Test_status
         FROM (
@@ -20,22 +26,10 @@ def verify_duplicate_records(database_name, schema_name, table_name, trg_col):
     # Executing the SQL query
     result_df = spark.sql(query)
     test_status = result_df.collect()[0]['Test_status']
+    print("'duplicate_Record_test' for " + table_name + " column: " + trg_col + ", Test status: " + test_status)
 
-    insertquery = f"""
-        INSERT INTO TABLE cert.test_status_db1.test_output_table
-        VALUES ('{exec_time}',
-                'tc0016',
-                '{database_name}',
-                'duplicate_records',
-                '',
-                '',
-                '{schema_name}',
-                '{table_name}',
-                '{test_status}')
-    """
-    spark.sql(insertquery)
-
-    # insert_into_test_output_table(exec_time,'tc003',database_name,'duplicate_records','','',schema_name,table_name,test_status)
+    # Inserting test status into test_output_table 
+    insert_query(executionTime(),testId(),database_name,'duplicate_records','','',schema_name,table_name,test_status)
 
     return test_status
 
@@ -48,8 +42,6 @@ def verify_null_records(database_name, schema_name, table_name, trg_col):
     
     full_table_name = f"{database_name}.{schema_name}.{table_name}"
 
-    exec_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
     query = f"""
         SELECT (CASE WHEN count(*) = 0 THEN 'PASS' ELSE 'FAIL' END) AS Test_status
         FROM {full_table_name}
@@ -59,21 +51,8 @@ def verify_null_records(database_name, schema_name, table_name, trg_col):
     # Executing the SQL query
     result_df = spark.sql(query)
     test_status = result_df.collect()[0]['Test_status']
-
-    insertquery = f"""
-        INSERT INTO TABLE cert.test_status_db1.test_output_table
-        VALUES ('{exec_time}',
-                'tc0016',
-                '{database_name}',
-                'null_records',
-                '',
-                '',
-                '{schema_name}',
-                '{table_name}',
-                '{test_status}')
-    """
-    spark.sql(insertquery)
-
-    # insert_into_test_output_table(exec_time,'tc003',database_name,'duplicate_records','','',schema_name,table_name,test_status)
+    print("'null_records_test' for " + table_name + " column: " + trg_col + ", Test status: " + test_status)
+    # Inserting test status into test_output_table 
+    insert_query(executionTime(),testId(),database_name,'null_records','','',schema_name,table_name,test_status)
 
     return test_status
