@@ -7,7 +7,7 @@ env = dbutils.widgets.get("Environment")
 app_id = dbutils.widgets.get("Client")
 tb_list = dbutils.widgets.get("TargetTableName")
 
-if(tb_list.length() == 0):
+if(len(tb_list) == 0):
   trg_table_list = getTargetTableList(app_id)
 else:
   trg_table_list = tb_list.split(',')
