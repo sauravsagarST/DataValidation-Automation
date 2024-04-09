@@ -1,27 +1,21 @@
 # Databricks notebook source
+def insert_query(suiteStartTime,execution_time,test_id,env,testname,source_client,source_tb,target_client,target_tb,trg_column,testQuery,test_status):
+    
+    full_table_name = f"cert.sfx_analytics.test_output_table"
 
-def insert_query(execution_time,test_id,env,testname,source_db,source_tb,target_db,target_tb,test_status):
-    # unique_id = test_id+execution_time
-    # print(unique_id)
-    full_table_name = f"cert.test_status_db1.test_output_table"
-
-    query = f"""
-        INSERT INTO TABLE {full_table_name} VALUES ('{execution_time}','{test_id}','{env}','{testname}',
-        '{source_db}','{source_tb}','{target_db}','{target_tb}','{test_status}')
+    query = f"""INSERT INTO TABLE {full_table_name} VALUES ('{suiteStartTime}','{execution_time}','{test_id}','{env}','{testname}','{source_client}','{source_tb}','{target_client}','{target_tb}','{trg_column}','{testQuery}','{test_status}')
     """
 
     spark.sql(query)
-    print("Data inserted into test_output_table successfully.")
 
-    # unique_id STRING (need to add)
-    # query STRING (need to add)
-    # execution_time timestamp,
-    # test_id String,
-    # environment STRING,
-    # testname STRING,
-    # source_database STRING,
-    # source_tablename STRING,
-    # target_database String,
-    # target_tablename String,
-    # test_status String
-
+    # SUITE_START_TIME STRING (need to add)
+    # TEST_START_TIME timestamp,
+    # TEST_ID String,
+    # ENVIRONMENT STRING,
+    # TEST_NAME STRING,
+    # SOURCE_CLIENT STRING,
+    # SOURCE_TABLE_NAME STRING,
+    # TARGET_CLIENT String,
+    # TARGET_TABLE_NAME String,
+    # TEST_QUERY STRING (need to add)
+    # TEST_STATUS String
