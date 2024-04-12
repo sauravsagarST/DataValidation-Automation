@@ -24,7 +24,7 @@ def verify_duplicate_records(env, clientName, table_name, trg_col, suiteStartTim
     test_status = result_df.collect()[0]['Test_status']
     print("'duplicate_Record_test' for " + table_name + " column: " + trg_col + ", Test status: " + test_status)
 
-    insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'duplicate_records','','',clientName,table_name,trg_col,'{testQuery}',test_status)
+    # insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'duplicate_records','','',clientName,table_name,trg_col,'{testQuery}',test_status)
 
     return test_status
 
@@ -44,7 +44,7 @@ def verify_null_records(env, clientName, table_name, trg_col, suiteStartTime):
     test_status = result_df.collect()[0]['Test_status']
     print("'null_records_test' for " + table_name + " column: " + trg_col + ", Test status: " + test_status)
  
-    insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'null_records','','',clientName,table_name,trg_col,'{testQuery}',test_status)
+    # insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'null_records','','',clientName,table_name,trg_col,'{testQuery}',test_status)
 
     return test_status
 
@@ -74,6 +74,6 @@ def Verify_full_load_row_count(env,clientName,target_table,suiteStartTime):
     source_table = target_table[7:]
     print("'full_load_row_count_test' target table " + target_table + " and source table: " + source_table + ", Test status: " + test_status)
    
-    insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'full_load_row_count','',source_table,clientName,target_table,'','{testQuery}',test_status)
+    # insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'full_load_row_count','',source_table,clientName,target_table,'','{testQuery}',test_status)
 
     return test_status
