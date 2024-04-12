@@ -1,7 +1,7 @@
 # Databricks notebook source
 def insert_query(suiteStartTime,execution_time,test_id,env,testname,source_client,source_tb,target_client,target_tb,trg_column,testQuery,test_status):
     
-    full_table_name = f"cert.sfx_analytics.test_output_table"
+    full_table_name = f"{env}.sfx_analytics.test_output_table"
 
     query = f"""INSERT INTO TABLE {full_table_name} VALUES ('{suiteStartTime}','{execution_time}','{test_id}','{env}','{testname}','{source_client}','{source_tb}','{target_client}','{target_tb}','{trg_column}','{testQuery}','{test_status}')
     """
