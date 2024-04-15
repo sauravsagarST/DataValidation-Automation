@@ -50,10 +50,10 @@ def verify_null_records(env, clientName, table_name, trg_col, suiteStartTime):
 
 # COMMAND ----------
 
-def Verify_full_load_row_count(env,clientName,target_table,suiteStartTime):
+def Verify_full_load_row_count(env,clientName,target_table,suiteStartTime,date_column):
     full_table_name = f"{env}.{clientName}.{target_table}"
 
-    dbricksQuery = f"""select count(*) as row_count from {full_table_name}
+    dbricksQuery = f"""select count(*) as row_count from {full_table_name} where {date_column} < '{getCurrentDate()}'
     """
     dbricksResult = spark.sql(dbricksQuery)
     dbricksCount = dbricksResult.collect()[0]['row_count'] 
@@ -62,7 +62,7 @@ def Verify_full_load_row_count(env,clientName,target_table,suiteStartTime):
     mySql_df.createOrReplaceTempView("mysql_table")
    
     # Run SQL queries against the temporary view
-    mySqlQuery = f"""SELECT count(*) as row_count FROM mysql_table
+    mySqlQuery = f"""SELECT count(*) as row_count FROM mysql_table where {date_column} < '{getCurrentDate()}'
     """
     sqlResult = spark.sql(mySqlQuery)
     mySqlCount = sqlResult.collect()[0]['row_count']
