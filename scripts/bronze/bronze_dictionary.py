@@ -21,8 +21,8 @@ bronze_users_dict = {
     'null_tc': ['users_id']
 }
 bronze_user_logins_dict ={
-    'duplicate_tc': ['users_id'],
-    'null_tc': ['users_id']
+    'duplicate_tc': ['user_logins_id'],
+    'null_tc': ['user_logins_id']
 }
 bronze_folder_candidates_dict = {
     'duplicate_tc': ['folder_cands_id'],
