@@ -5,15 +5,9 @@
 
 from datetime import datetime
 
-def getMySqlHost(env):
-    if(env == 'cert'):
-        return mySqlHost_cert
-    if(env == 'prod'):
-        return mySqlHost_prod
+def getMySqlHost():
+    return mySqlHost
 
-def getCurrentDate():
-    curr_date = datetime.now().strftime("%Y-%m-%d 00:00:00")
-    return curr_date
 
 def getCurrentTime():
     curr_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -23,12 +17,6 @@ def getCurrentTime():
 def getTestId():
     tId = "TC"+datetime.now().strftime("%Y-%m-%d_%H:%M:%S:%f")
     return tId
-
-def getDashboardTables(dashboard):
-    if(dashboard == 'userinsight'):
-        return dashboard_dict.get('userinsight', [])
-    if(dashboard == 'talentnetwork'):
-        return dashboard_dict.get('talentnetwork', [])
 
 
 def getDuplicateTestTargetColumns(trg_tb):
@@ -64,13 +52,11 @@ def deleteOldTestOutputRecords():
 
 def getMySqlData(env,client,trg_tb):
     src_tb = trg_tb[7:]
-    db_host = getMySqlHost(env)
-    # scope = f"{env}-credentials"
+    db_host = getMySqlHost()
+    scope = f"{env}-credentials"
     # Reading credentials from Secret Scope
-    db_username = "saurav.sagar"
-    db_password = "Purpl3M()useGl0wing"
-    # db_username = dbutils.secrets.get(scope=f"{scope}", key="db-user")
-    # db_password = dbutils.secrets.get(scope=f"{scope}", key="db-password")
+    db_username = dbutils.secrets.get(scope=f"{scope}", key="db-user")
+    db_password = dbutils.secrets.get(scope=f"{scope}", key="db-password")
 
     mysql_df = spark.read \
                 .format("jdbc") \
@@ -81,3 +67,21 @@ def getMySqlData(env,client,trg_tb):
                 .load()
     mysql_df.createOrReplaceTempView("mysql_tempTable")
     return mysql_df
+
+# load data from s3 to bronze(gaVisitors)
+def getS3Data(env,client,trg_tb):
+    input_path = dbutils.widgets.get("input_path") # source file path in S3 - "s3://hodes-external-data/google-analytics/archive-clean/ga_visitors/"
+    env = dbutils.widgets.get("env")
+    output_table_name = dbutils.widgets.get("output_table") #bronze_ga_visitors
+    output_table = f"{env}.sfx_analytics.{output_table_name}" # target table name in databricks
+    checkpoint_location = dbutils.widgets.get("checkpoint_location")  # checkpoint path of the table "/FileStore/st_checkpoint/autoloader/sfx_analytics/ga_visitors"
+    # Creating a readStream to read the S3 data
+    df = spark.readStream.format("cloudFiles") \
+                        .option("cloudFiles.format", "csv") \
+                        .option("sep", "\t") \
+                        .option("cloudFiles.partitionColumns", "dbname") \
+                        .option("cloudFiles.schemaEvolutionMode", "rescue") \
+                        .option("cloudFiles.rescuedDataColumn", "rescued_data") \
+                        .schema(schema) \
+                        .load(input_path)
+
