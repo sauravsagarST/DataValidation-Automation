@@ -66,14 +66,14 @@ def Verify_full_load_row_count(env,clientName,target_table,suiteStartTime,date_c
     """
     sqlResult = spark.sql(mySqlQuery)
     mySqlCount = sqlResult.collect()[0]['row_count']
+    source_table = target_table[7:]
     if(dbricksCount == mySqlCount):
         test_status = "PASS"
+        print("'full_load_row_count_test' target table " + target_table + " and source table: " + source_table + ", Test status: " + test_status)
     else:
         test_status = "FAIL"
-
-    source_table = target_table[7:]
-    print("'full_load_row_count_test' target table " + target_table + " and source table: " + source_table + ", Test status: " + test_status)
-   
+        print("'full_load_row_count_test' target table " + target_table + " and source table: " + source_table + ", Test status: " + test_status + ",  Databricks_count(" +str(dbricksCount)+")  MySql_count("+str(mySqlCount)+")" )
+        
     insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'full_load_row_count','',source_table,clientName,target_table,'','{testQuery}',test_status)
 
     return test_status
