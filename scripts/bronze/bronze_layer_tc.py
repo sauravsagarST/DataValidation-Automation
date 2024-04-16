@@ -3,15 +3,15 @@
 
 # COMMAND ----------
 
-env = dbutils.widgets.get("Environment")
-app_id = dbutils.widgets.get("Client")
-dboard = dbutils.widgets.get("Dashboard")
-trg_table_list = getDashboardTables(dboard)
+# env = dbutils.widgets.get("Environment")
+# app_id = dbutils.widgets.get("Client")
+# dboard = dbutils.widgets.get("Dashboard")
+# trg_table_list = getDashboardTables(dboard)
 
-# env = "prod"
-# app_id = "xcloud"
+env = "prod"
+app_id = "clevelandclinic"
 # trg_table_list = getDashboardTables('userinsight')
-# trg_table_list = getDashboardTables('talentnetwork')
+trg_table_list = getDashboardTables('talentnetwork')
 
 # print(trg_table_list)
 # trg_table_list = tb_list.split(',')
