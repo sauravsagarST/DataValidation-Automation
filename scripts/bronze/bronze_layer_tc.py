@@ -3,17 +3,19 @@
 
 # COMMAND ----------
 
+# MAGIC %run ../../tests/cwsDashboard_tests
+
+# COMMAND ----------
+
 env = dbutils.widgets.get("Environment")
 app_id = dbutils.widgets.get("Client")
 dboard = dbutils.widgets.get("Dashboard")
 trg_table_list = getDashboardTables(dboard)
 
 # env = "prod"
-# app_id = "xcloud"
+# app_id = "clevelandclinic"
 # trg_table_list = getDashboardTables('userinsight')
 # trg_table_list = getDashboardTables('talentnetwork')
-
-
 
 suiteStartTime = getCurrentTime()
 
@@ -152,4 +154,36 @@ for trg_tb in trg_table_list:
 
     Verify_full_load_row_count(env,app_id,trg_tb,suiteStartTime,'modified_on')
 
+    
+
+  if(googleAnalytics_test_flag == "true" && trg_tb == 'bronze_ga_content'):
+    googleAnalytics_GaContent_RowCount(env,app_id,trg_tb,suiteStartTime)
+
+  if(googleAnalytics_test_flag == "true" && trg_tb == 'bronze_ga_location'):
+    googleAnalytics_GaLocation_RowCount(env,app_id,trg_tb,suiteStartTime)
+  
+  if(googleAnalytics_test_flag == "true" && trg_tb == 'bronze_ga_source'):
+    googleAnalytics_GaSources_RowCount(env,app_id,trg_tb,suiteStartTime)
+  
+  if(googleAnalytics_test_flag == "true" && trg_tb == 'bronze_ga_visitors'):
+    googleAnalytics_GaVisitors_RowCount(env,app_id,trg_tb,suiteStartTime)
+
+  if(trg_tb == 'bronze_ga4_content'):
+    googleAnalytics4_Ga4_Content_RowCount(env,app_id,trg_tb,suiteStartTime)
+    
+  if(trg_tb == 'bronze_ga4_location'):
+    googleAnalytics4_Ga4_Location_RowCount(env,app_id,trg_tb,suiteStartTime)
+    
+  if(trg_tb == 'bronze_ga4_source'):
+    googleAnalytics4_Ga4_Sources_RowCount(env,app_id,trg_tb,suiteStartTime)
+
+  if(trg_tb == 'bronze_ga4_visitors'):
+    googleAnalytics4_Ga4_Visitors_RowCount(env,app_id,trg_tb,suiteStartTime)
+
+
+
+
  
+
+
+
