@@ -54,13 +54,17 @@ def getDateColumn(trg_tb):
 
 
 def getTargetTableList(app_id,env):
-    query = f"""
-        SELECT DISTINCT target FROM {env}.sfx_analytics.bronze_load_config WHERE app_id = "{app_id}"
-    """
-    print(query)
-    result_df = spark.sql(query)
-    trg_table_list = [row.target for row in result_df.collect()]
-    return trg_table_list
+    try:
+        query = f"""
+            SELECT DISTINCT target FROM {env}.sfx_analytics.bronze_load_config WHERE app_id = "{app_id}"
+        """
+        print(query)
+        result_df = spark.sql(query)
+        trg_table_list = [row.target for row in result_df.collect()]
+        return trg_table_list
+    except Exception as e:
+        trg_table_list = []
+        return trg_table_list
 
 
 def deleteOldTestOutputRecords():
@@ -95,7 +99,7 @@ def getMySqlData(env,client,trg_tb):
 def getClientListByGroup(group_Id,env):
     if(group_Id == '102'):
         testQuery_102 = f"""
-            select distinct app_id from prod.sfx_analytics.bronze_load_config where group_id = '102'
+            select distinct app_id from {env}.sfx_analytics.bronze_load_config where group_id = '102'
         """
         client_result_df_102 = spark.sql(testQuery_102)
         client_list = [row.app_id for row in client_result_df_102.collect()]
@@ -129,4 +133,3 @@ def getClientListByGroup(group_Id,env):
         client_list = [row.app_id for row in client_result_df_106.collect()]
 
     return client_list
-

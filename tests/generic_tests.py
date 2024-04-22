@@ -8,107 +8,123 @@
 # COMMAND ----------
 
 def verify_duplicate_records(env, clientName, table_name, trg_col, suiteStartTime):
-    full_table_name = f"{env}.{clientName}.{table_name}"
-    
-    testQuery = f"""
-        SELECT (CASE WHEN cnt = 0 THEN 'PASS' ELSE 'FAIL' END) AS Test_status
-        FROM (
-            SELECT COUNT(*) AS cnt
+    full_table_name = f"`{env}`.`{clientName}`.`{table_name}`"
+    try :
+        spark.table(full_table_name).limit(1).count()
+        testQuery = f"""
+            SELECT (CASE WHEN cnt = 0 THEN 'PASS' ELSE 'FAIL' END) AS Test_status
             FROM (
-                SELECT COUNT(*) FROM {full_table_name} GROUP BY {trg_col} HAVING COUNT(*) > 1
+                SELECT COUNT(*) AS cnt
+                FROM (
+                    SELECT COUNT(*) FROM {full_table_name} GROUP BY {trg_col} HAVING COUNT(*) > 1
+                )
             )
-        )
-    """
+        """
 
-    result_df = spark.sql(testQuery)
-    test_status = result_df.collect()[0]['Test_status']
-    print("'duplicate_Record_test' for " + table_name + " column: " + trg_col + ", Test status: " + test_status)
+        result_df = spark.sql(testQuery)
+        test_status = result_df.collect()[0]['Test_status']
+        print("'duplicate_Record_test' for " + table_name + " column: " + trg_col + ", Test status: " + test_status)
 
-    insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'duplicate_records','','',clientName,table_name,trg_col,'{testQuery}',test_status)
+        insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'duplicate_records','','',clientName,table_name,trg_col,'{testQuery}',test_status)
 
-    return test_status
+        return test_status
+    except Exception as e:
+        test_status = f"Table '{full_table_name}' does not exist."
+        return test_status
 
 
 # COMMAND ----------
 
 def verify_null_records(env, clientName, table_name, trg_col, suiteStartTime):
-    full_table_name = f"{env}.{clientName}.{table_name}"
+    full_table_name = f"`{env}`.`{clientName}`.`{table_name}`"
+    try :
+        spark.table(full_table_name).limit(1).count()
+        testQuery = f"""
+            SELECT (CASE WHEN count(*) = 0 THEN 'PASS' ELSE 'FAIL' END) AS Test_status
+            FROM {full_table_name}
+            WHERE {trg_col} IS NULL
+        """
 
-    testQuery = f"""
-        SELECT (CASE WHEN count(*) = 0 THEN 'PASS' ELSE 'FAIL' END) AS Test_status
-        FROM {full_table_name}
-        WHERE {trg_col} IS NULL
-    """
-
-    result_df = spark.sql(testQuery)
-    test_status = result_df.collect()[0]['Test_status']
-    print("'null_records_test' for " + table_name + " column: " + trg_col + ", Test status: " + test_status)
- 
-    insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'null_records','','',clientName,table_name,trg_col,'{testQuery}',test_status)
-
-    return test_status
-
+        result_df = spark.sql(testQuery)
+        test_status = result_df.collect()[0]['Test_status']
+        print("'null_records_test' for " + table_name + " column: " + trg_col + ", Test status: " + test_status)
+    
+        insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'null_records','','',clientName,table_name,trg_col,'{testQuery}',test_status)
+        
+        return test_status
+    except Exception as e:
+        test_status = f"Table '{full_table_name}' does not exist."
+        return test_status
 # COMMAND ----------
 
 def Verify_full_load_row_count(env,clientName,target_table,suiteStartTime,date_column):
-    full_table_name = f"{env}.{clientName}.{target_table}"
+    full_table_name = f"`{env}`.`{clientName}`.`{target_table}`"
+    try:
 
-    dbricksQuery = f"""select count(*) as row_count from {full_table_name} where {date_column} < '{getCurrentDate()}'
-    """
-    dbricksResult = spark.sql(dbricksQuery)
-    dbricksCount = dbricksResult.collect()[0]['row_count'] 
+        dbricksQuery = f"""select count(*) as row_count from {full_table_name} where {date_column} < '{getCurrentDate()}'
+        """
+        dbricksResult = spark.sql(dbricksQuery)
+        dbricksCount = dbricksResult.collect()[0]['row_count'] 
 
-    mySql_df = getMySqlData(env,clientName,target_table)
-    mySql_df.createOrReplaceTempView("mysql_table")
-   
-    # Run SQL queries against the temporary view
-    mySqlQuery = f"""SELECT count(*) as row_count FROM mysql_table where {date_column} < '{getCurrentDate()}'
-    """
-    sqlResult = spark.sql(mySqlQuery)
-    mySqlCount = sqlResult.collect()[0]['row_count']
-    source_table = target_table[7:]
-    if(dbricksCount == mySqlCount):
-        test_status = "PASS"
-        print("'full_load_row_count_test' target table " + target_table + " and source table: " + source_table + ", Test status: " + test_status)
-    else:
-        test_status = "FAIL"
-        print("'full_load_row_count_test' target table " + target_table + " and source table: " + source_table + ", Test status: " + test_status + ",  Databricks_count(" +str(dbricksCount)+")  MySql_count("+str(mySqlCount)+")" )
+        mySql_df = getMySqlData(env,clientName,target_table)
+        mySql_df.createOrReplaceTempView("mysql_table")
+    
+        # Run SQL queries against the temporary view
+        mySqlQuery = f"""SELECT count(*) as row_count FROM mysql_table where {date_column} < '{getCurrentDate()}'
+        """
+        sqlResult = spark.sql(mySqlQuery)
+        mySqlCount = sqlResult.collect()[0]['row_count']
+        source_table = target_table[7:]
+        if(dbricksCount == mySqlCount):
+            test_status = "PASS"
+            print("'full_load_row_count_test' target table " + target_table + " and source table: " + source_table + ", Test status: " + test_status)
+        else:
+            test_status = "FAIL"
+            print("'full_load_row_count_test' target table " + target_table + " and source table: " + source_table + ", Test status: " + test_status + ",  Databricks_count(" +str(dbricksCount)+")  MySql_count("+str(mySqlCount)+")" )
 
-      
-    insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'full_load_row_count','',source_table,clientName,target_table,'','{testQuery}',test_status)
+        
+        insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'full_load_row_count','',source_table,clientName,target_table,'','{testQuery}',test_status)
 
-    return test_status
+        return test_status
+    except Exception as e:
+        test_status = f"Table '{full_table_name}' does not exist."
+        return test_status
 
 # COMMAND ----------
 
 def Verify_full_load_row_count2(env,clientName,target_table,suiteStartTime):
-    full_table_name = f"{env}.{clientName}.{target_table}"
+    full_table_name = f"`{env}`.`{clientName}`.`{target_table}`"
+    try:
 
-    dbricksQuery = f"""select count(*) as row_count from {full_table_name}
-    """
-    dbricksResult = spark.sql(dbricksQuery)
-    dbricksCount = dbricksResult.collect()[0]['row_count'] 
+        dbricksQuery = f"""select count(*) as row_count from {full_table_name}
+        """
+        dbricksResult = spark.sql(dbricksQuery)
+        dbricksCount = dbricksResult.collect()[0]['row_count'] 
 
-    mySql_df = getMySqlData(env,clientName,target_table)
-    mySql_df.createOrReplaceTempView("mysql_table")
-   
-    # Run SQL queries against the temporary view
-    mySqlQuery = f"""SELECT count(*) as row_count FROM mysql_table
-    """
-    sqlResult = spark.sql(mySqlQuery)
-    mySqlCount = sqlResult.collect()[0]['row_count']
-    source_table = target_table[7:]
-    if(dbricksCount == mySqlCount):
-        test_status = "PASS"
-        print("'full_load_row_count_test' target table " + target_table + " and source table: " + source_table + ", Test status: " + test_status)
-    else:
-        test_status = "FAIL"
-        print("'full_load_row_count_test' target table " + target_table + " and source table: " + source_table + ", Test status: " + test_status + ",  Databricks_count(" +str(dbricksCount)+")  MySql_count("+str(mySqlCount)+")" )
-
+        mySql_df = getMySqlData(env,clientName,target_table)
+        mySql_df.createOrReplaceTempView("mysql_table")
     
-    insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'full_load_row_count','',source_table,clientName,target_table,'','{testQuery}',test_status)
+        # Run SQL queries against the temporary view
+        mySqlQuery = f"""SELECT count(*) as row_count FROM mysql_table
+        """
+        sqlResult = spark.sql(mySqlQuery)
+        mySqlCount = sqlResult.collect()[0]['row_count']
+        source_table = target_table[7:]
+        if(dbricksCount == mySqlCount):
+            test_status = "PASS"
+            print("'full_load_row_count_test' target table " + target_table + " and source table: " + source_table + ", Test status: " + test_status)
+        else:
+            test_status = "FAIL"
+            print("'full_load_row_count_test' target table " + target_table + " and source table: " + source_table + ", Test status: " + test_status + ",  Databricks_count(" +str(dbricksCount)+")  MySql_count("+str(mySqlCount)+")" )
 
-    return test_status
+        
+        insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'full_load_row_count','',source_table,clientName,target_table,'','{testQuery}',test_status)
+
+        return test_status
+    
+    except Exception as e:
+        test_status = f"Table '{full_table_name}' does not exist."
+        return test_status
 
 # COMMAND ----------
 
