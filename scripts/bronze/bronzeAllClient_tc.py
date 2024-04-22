@@ -5,12 +5,12 @@
 
 env = dbutils.widgets.get("Environment")
 groupId = dbutils.widgets.get("group_id")
-client_list = getClientListByGroup(groupId)
+client_list = getClientListByGroup(groupId,env)
 
 suiteStartTime = getCurrentTime()
 
 for app_id in client_list:
-  trg_table_list = getTargetTableList(app_id)
+  trg_table_list = getTargetTableList(app_id,env)
   for trg_tb in trg_table_list:
 
   # TB-1 TEST METHODS CALLING FOR BRONZE_APPLICATION

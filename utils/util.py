@@ -53,9 +53,9 @@ def getDateColumn(trg_tb):
     return date_col
 
 
-def getTargetTableList(app_id):
+def getTargetTableList(app_id,env):
     query = f"""
-        SELECT DISTINCT target FROM cert.sfx_analytics.bronze_load_config WHERE app_id = "{app_id}"
+        SELECT DISTINCT target FROM {env}.sfx_analytics.bronze_load_config WHERE app_id = "{app_id}"
     """
     print(query)
     result_df = spark.sql(query)
@@ -67,7 +67,7 @@ def deleteOldTestOutputRecords():
     from datetime import datetime, timedelta
     ten_days_ago = datetime.now() - timedelta(days=10)
     formatted_date = ten_days_ago.strftime('%Y-%m-%d')
-    deleteQuery = f"DELETE FROM cert.sfx_analytics.test_output_table WHERE SUITE_START_TIME < '{formatted_date}'"
+    deleteQuery = f"DELETE FROM {env}.sfx_analytics.test_output_table WHERE SUITE_START_TIME < '{formatted_date}'"
     spark.sql(deleteQuery)
     print("Data older than 10 days has been successfully deleted.")
 
@@ -92,7 +92,7 @@ def getMySqlData(env,client,trg_tb):
     return mysql_df
 
 
-def getClientListByGroup(group_Id):
+def getClientListByGroup(group_Id,env):
     if(group_Id == '102'):
         testQuery_102 = f"""
             select distinct app_id from prod.sfx_analytics.bronze_load_config where group_id = '102'
@@ -102,28 +102,28 @@ def getClientListByGroup(group_Id):
 
     if(group_Id == '103'):
         testQuery_103 = f"""
-            select distinct app_id from prod.sfx_analytics.bronze_load_config where group_id = '103'
+            select distinct app_id from {env}.sfx_analytics.bronze_load_config where group_id = '103'
         """
         client_result_df_103 = spark.sql(testQuery_103)
         client_list = [row.app_id for row in client_result_df_103.collect()]
 
     if(group_Id == '104'):
         testQuery_104 = f"""
-            select distinct app_id from prod.sfx_analytics.bronze_load_config where group_id = '104'
+            select distinct app_id from {env}.sfx_analytics.bronze_load_config where group_id = '104'
         """
         client_result_df_104 = spark.sql(testQuery_104)
         client_list = [row.app_id for row in client_result_df_104.collect()]
 
     if(group_Id == '105'):
         testQuery_105 = f"""
-            select distinct app_id from prod.sfx_analytics.bronze_load_config where group_id = '105'
+            select distinct app_id from {env}.sfx_analytics.bronze_load_config where group_id = '105'
         """
         client_result_df_105 = spark.sql(testQuery_105)
         client_list = [row.app_id for row in client_result_df_105.collect()]
 
     if(group_Id == '106'):
         testQuery_106 = f"""
-            select distinct app_id from prod.sfx_analytics.bronze_load_config where group_id = '106'
+            select distinct app_id from {env}.sfx_analytics.bronze_load_config where group_id = '106'
         """
         client_result_df_106 = spark.sql(testQuery_106)
         client_list = [row.app_id for row in client_result_df_106.collect()]
