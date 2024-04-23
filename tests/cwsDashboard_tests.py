@@ -15,8 +15,8 @@ def s3fileRowCounter(gaPath,client):
         if(clientDirectory[1] == client_dbname):
             filesList = dbutils.fs.ls(clientDirectory[0])
             for files in filesList:
-                l = spark.read.text(files[0],linesSep="\n")
-                files_RowCount = files_RowCount + l.count
+                l = spark.read.text(files[0],lineSep="\n")
+                files_RowCount = files_RowCount + l.count()
     return file_RowCount
 
 # COMMAND ----------
