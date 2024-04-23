@@ -32,6 +32,8 @@ def getDashboardTables(dashboard):
         return dashboard_dict.get('userinsight', [])
     if(dashboard == 'talentnetwork'):
         return dashboard_dict.get('talentnetwork', [])
+    if(dashboard == 'cws'):
+        return dashboard_dict.get('cws', [])
 
 
 def getDuplicateTestTargetColumns(trg_tb):
