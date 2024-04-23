@@ -3,13 +3,19 @@
 
 # COMMAND ----------
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def getMySqlHost(env):
     if(env == 'cert'):
         return mySqlHost_cert
     if(env == 'prod'):
         return mySqlHost_prod
+
+
+def getPreviousDate():
+    curr_date = datetime.now() - timedelta(days=1)
+    prev_date = curr_date.strftime("%Y-%m-%d 00:00:00")
+    return prev_date
 
 
 def getCurrentDate():
@@ -25,6 +31,13 @@ def getCurrentTime():
 def getTestId():
     tId = "TC"+datetime.now().strftime("%Y-%m-%d_%H:%M:%S:%f")
     return tId
+
+
+def getPrimaryColumn(trg_tb):
+    dict_name = trg_tb+'_dict'
+    target_dict = globals()[dict_name]
+    date_col = target_dict.get('primary_column', [])[0]
+    return date_col
 
 
 def getDashboardTables(dashboard):
@@ -48,11 +61,27 @@ def getNullTestTargetColumns(trg_tb):
     return target_dict.get('null_tc', [])
 
 
+def getIncrementalValues(env, clientName, table_name, primary_column, date_column, valueType):
+    full_table_name = f"`{env}`.`{clientName}`.`{table_name}`"
+    incrementalquery = f"""
+    select max({primary_column}) as max_value,min({primary_column}) as min_value  from {full_table_name} where {date_column} > '{getPreviousDate()}'
+    """
+    print(incrementalquery)
+    incrementalValues = spark.sql(incrementalquery)
+    maxincrementalValue = incrementalValues.collect()[0]['max_value']
+    minincrementalValue = incrementalValues.collect()[0]['min_value']
+    if(valueType == "max"):
+        return maxincrementalValue
+    else:
+        return minincrementalValue
+    
+
 def getDateColumn(trg_tb):
     dict_name = trg_tb+'_dict'
     target_dict = globals()[dict_name]
     date_col = target_dict.get('date_column', [])[0]
     return date_col
+
 
 
 def getTargetTableList(app_id,env):
