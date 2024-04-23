@@ -162,7 +162,7 @@ for trg_tb in trg_table_list:
   if(googleAnalytics_test_flag == "true" and trg_tb == 'bronze_ga_location'):
     googleAnalytics_GaLocation_RowCount(env,app_id,trg_tb,suiteStartTime)
   
-  if(googleAnalytics_test_flag == "true" and trg_tb == 'bronze_ga_source'):
+  if(googleAnalytics_test_flag == "true" and trg_tb == 'bronze_ga_sources'):
     googleAnalytics_GaSources_RowCount(env,app_id,trg_tb,suiteStartTime)
   
   if(googleAnalytics_test_flag == "true" and trg_tb == 'bronze_ga_visitors'):
@@ -174,7 +174,7 @@ for trg_tb in trg_table_list:
   if(trg_tb == 'bronze_ga4_location'):
     googleAnalytics4_Ga4_Location_RowCount(env,app_id,trg_tb,suiteStartTime)
     
-  if(trg_tb == 'bronze_ga4_source'):
+  if(trg_tb == 'bronze_ga4_sources'):
     googleAnalytics4_Ga4_Sources_RowCount(env,app_id,trg_tb,suiteStartTime)
 
   if(trg_tb == 'bronze_ga4_visitors'):
