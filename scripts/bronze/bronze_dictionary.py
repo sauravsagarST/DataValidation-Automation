@@ -19,7 +19,7 @@ dashboard_dict = {
 
     'talentnetwork': ['bronze_candidate','bronze_work_hostory','bronze_attachment','bronze_communication_types','bronze_candidate_subscription','bronze_areaofinterest_candidate','bronze_folder','bronze_folder_candidates','bronze_users','bronze_tags','bronze_tags_candidate'],
 
-    'cws': ['bronze_ga_content','bronze_ga_location','bronze_ga_source','bronze_ga_visitors','bronze_ga4_content','bronze_ga4_location','bronze_ga4_source','bronze_ga4_visitors']
+    'cws': ['bronze_ga_content','bronze_ga_location','bronze_ga_sources','bronze_ga_visitors','bronze_ga4_content','bronze_ga4_location','bronze_ga4_sources','bronze_ga4_visitors']
 
 }
 
