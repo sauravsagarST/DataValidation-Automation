@@ -3,6 +3,7 @@
 
 # COMMAND ----------
 
+
 from datetime import datetime, timedelta
 
 def getMySqlHost(env):
@@ -164,3 +165,4 @@ def getClientListByGroup(group_Id,env):
         client_list = [row.app_id for row in client_result_df_106.collect()]
 
     return client_list
+
