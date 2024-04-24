@@ -48,6 +48,8 @@ def getDashboardTables(dashboard):
         return dashboard_dict.get('talentnetwork', [])
     if(dashboard == 'cws'):
         return dashboard_dict.get('cws', [])
+    if(dashboard == 'contactmessages'):
+        return dashboard_dict.get('contactmessages', [])
 
 
 def getDuplicateTestTargetColumns(trg_tb):
@@ -67,7 +69,6 @@ def getIncrementalValues(env, clientName, table_name, primary_column, date_colum
     incrementalquery = f"""
     select max({primary_column}) as max_value,min({primary_column}) as min_value  from {full_table_name} where {date_column} > '{getPreviousDate()}'
     """
-    print(incrementalquery)
     incrementalValues = spark.sql(incrementalquery)
     maxincrementalValue = incrementalValues.collect()[0]['max_value']
     minincrementalValue = incrementalValues.collect()[0]['min_value']
@@ -90,7 +91,6 @@ def getTargetTableList(app_id,env):
         query = f"""
             SELECT DISTINCT target FROM {env}.sfx_analytics.bronze_load_config WHERE app_id = "{app_id}"
         """
-        print(query)
         result_df = spark.sql(query)
         trg_table_list = [row.target for row in result_df.collect()]
         return trg_table_list
