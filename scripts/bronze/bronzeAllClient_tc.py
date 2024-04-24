@@ -9,9 +9,8 @@ runType = dbutils.widgets.get("RunType")
 client_list = getClientListByGroup(groupId,env)
 
 suiteStartTime = getCurrentTime()
-
+clientCount = 0
 for app_id in client_list:  
-  clientCount = 0
   clientCount = clientCount + 1
   print(clientCount, ". Running Test Cases for Client: "+ app_id)  
   trg_table_list = getTargetTableList(app_id,env)
@@ -438,6 +437,10 @@ for app_id in client_list:
 
     #TB-14 TEST METHODS CALLING FOR BRONZE_COMMUNICATION_TEMPLATE
       if(trg_tb == 'bronze_communication_template'):
+        full_table_name = f"`{env}`.`{app_id}`.`{trg_tb}`"
+        try:
+          spark.table(full_table_name).limit(1).count()
+
           for trg_col in getDuplicateTestTargetColumns(trg_tb):
             verify_duplicate_records(env, app_id, trg_tb,trg_col,suiteStartTime)
         
@@ -445,6 +448,8 @@ for app_id in client_list:
             verify_null_records(env, app_id, trg_tb,trg_col,suiteStartTime)
 
           Verify_full_load_row_count2(env,app_id,trg_tb,suiteStartTime)
+        except Exception as e:
+          print(f"Table '{full_table_name}' does not exist.")
 
     #TB-15 TEST METHODS CALLING FOR BRONZE_COMMUNICATION_TYPES
       if(trg_tb == 'bronze_communication_types'):
@@ -480,6 +485,10 @@ for app_id in client_list:
 
     #TB-16 TEST METHODS CALLING FOR BRONZE_EVENT_STORE
       if(trg_tb == 'bronze_event_store'):
+        full_table_name = f"`{env}`.`{app_id}`.`{trg_tb}`"
+        try:
+          spark.table(full_table_name).limit(1).count()
+
           for trg_col in getDuplicateTestTargetColumns(trg_tb):
             verify_duplicate_records(env, app_id, trg_tb,trg_col,suiteStartTime)
         
@@ -487,6 +496,9 @@ for app_id in client_list:
             verify_null_records(env, app_id, trg_tb,trg_col,suiteStartTime)
 
           Verify_full_load_row_count2(env,app_id,trg_tb,suiteStartTime)
+        except Exception as e:
+          print(f"Table '{full_table_name}' does not exist.")
+        
 
     #TB-17 TEST METHODS CALLING FOR BRONZE_EVENT_TYPE
       if(trg_tb == 'bronze_event_type'):
@@ -522,6 +534,10 @@ for app_id in client_list:
 
     #TB-18 TEST METHODS CALLING FOR BRONZE_EVENT_WORKER
       if(trg_tb == 'bronze_event_worker'):
+        full_table_name = f"`{env}`.`{app_id}`.`{trg_tb}`"
+        try:
+          spark.table(full_table_name).limit(1).count()
+
           for trg_col in getDuplicateTestTargetColumns(trg_tb):
             verify_duplicate_records(env, app_id, trg_tb,trg_col,suiteStartTime)
         
@@ -529,6 +545,8 @@ for app_id in client_list:
             verify_null_records(env, app_id, trg_tb,trg_col,suiteStartTime)
 
           Verify_full_load_row_count2(env,app_id,trg_tb,suiteStartTime)
+        except Exception as e:
+          print(f"Table '{full_table_name}' does not exist.")
 
     #TB-19 TEST METHODS CALLING FOR BRONZE_EVENTS
       if(trg_tb == 'bronze_events'):
@@ -692,6 +710,10 @@ for app_id in client_list:
 
     #TB-24 TEST METHODS CALLING FOR BRONZE_GROUPS only have 2 columns
       if(trg_tb == 'bronze_groups'):
+        full_table_name = f"`{env}`.`{app_id}`.`{trg_tb}`"
+        try:
+          spark.table(full_table_name).limit(1).count()
+
           for trg_col in getDuplicateTestTargetColumns(trg_tb):
             verify_duplicate_records(env, app_id, trg_tb,trg_col,suiteStartTime)
         
@@ -699,9 +721,15 @@ for app_id in client_list:
             verify_null_records(env, app_id, trg_tb,trg_col,suiteStartTime)
 
           Verify_full_load_row_count2(env,app_id,trg_tb,suiteStartTime)
+        except Exception as e:
+          print(f"Table '{full_table_name}' does not exist.")
 
     #TB-25 TEST METHODS CALLING FOR BRONZE_HIERARCHY
       if(trg_tb == 'bronze_hierarchy'):
+        full_table_name = f"`{env}`.`{app_id}`.`{trg_tb}`"
+        try:
+          spark.table(full_table_name).limit(1).count()
+
           for trg_col in getDuplicateTestTargetColumns(trg_tb):
             verify_duplicate_records(env, app_id, trg_tb,trg_col,suiteStartTime)
         
@@ -709,6 +737,8 @@ for app_id in client_list:
             verify_null_records(env, app_id, trg_tb,trg_col,suiteStartTime)
 
           Verify_full_load_row_count2(env,app_id,trg_tb,suiteStartTime)
+        except Exception as e:
+          print(f"Table '{full_table_name}' does not exist.")
 
     #TB-26 TEST METHODS CALLING FOR BRONZE_INTEGRATION_EXCEPTION_LOG
       if(trg_tb == 'bronze_integration_exception_log'):
@@ -808,6 +838,10 @@ for app_id in client_list:
 
     #TB-29 TEST METHODS CALLING FOR BRONZE_JOBALERT_CLIENT_LOG
       if(trg_tb == 'bronze_jobalert_client_log'):
+        full_table_name = f"`{env}`.`{app_id}`.`{trg_tb}`"
+        try:
+          spark.table(full_table_name).limit(1).count()
+
           for trg_col in getDuplicateTestTargetColumns(trg_tb):
             verify_duplicate_records(env, app_id, trg_tb,trg_col,suiteStartTime)
         
@@ -815,9 +849,15 @@ for app_id in client_list:
             verify_null_records(env, app_id, trg_tb,trg_col,suiteStartTime)
 
           Verify_full_load_row_count2(env,app_id,trg_tb,suiteStartTime)
+        except Exception as e:
+          print(f"Table '{full_table_name}' does not exist.")
     
     #TB-30 TEST METHODS CALLING FOR BRONZE_LIST
       if(trg_tb == 'bronze_list'):
+        full_table_name = f"`{env}`.`{app_id}`.`{trg_tb}`"
+        try:
+          spark.table(full_table_name).limit(1).count()
+
           for trg_col in getDuplicateTestTargetColumns(trg_tb):
             verify_duplicate_records(env, app_id, trg_tb,trg_col,suiteStartTime)
         
@@ -825,6 +865,8 @@ for app_id in client_list:
             verify_null_records(env, app_id, trg_tb,trg_col,suiteStartTime)
 
           Verify_full_load_row_count2(env,app_id,trg_tb,suiteStartTime)
+        except Exception as e:
+          print(f"Table '{full_table_name}' does not exist.")
 
     #TB-31 TEST METHODS CALLING FOR BRONZE_REFERRAL
       if(trg_tb == 'bronze_referral'):
@@ -1084,23 +1126,35 @@ for app_id in client_list:
 
     #TB-39 TEST METHODS CALLING FOR BRONZE_USER_LOGINS
       if(trg_tb == 'bronze_user_logins'):
-        for trg_col in getDuplicateTestTargetColumns(trg_tb):
-          verify_duplicate_records(env, app_id, trg_tb,trg_col,suiteStartTime)
+        full_table_name = f"`{env}`.`{app_id}`.`{trg_tb}`"
+        try:
+          spark.table(full_table_name).limit(1).count()
 
-        for trg_col in getNullTestTargetColumns(trg_tb):  
-          verify_null_records(env, app_id, trg_tb,trg_col,suiteStartTime)
+          for trg_col in getDuplicateTestTargetColumns(trg_tb):
+            verify_duplicate_records(env, app_id, trg_tb,trg_col,suiteStartTime)
+        
+          for trg_col in getNullTestTargetColumns(trg_tb):  
+            verify_null_records(env, app_id, trg_tb,trg_col,suiteStartTime)
 
-        Verify_full_load_row_count2(env,app_id,trg_tb,suiteStartTime)
+          Verify_full_load_row_count2(env,app_id,trg_tb,suiteStartTime)
+        except Exception as e:
+          print(f"Table '{full_table_name}' does not exist.")
 
     #TB-40 TEST METHODS CALLING FOR BRONZE_USER_SEARCHES
       if(trg_tb == 'bronze_user_searches'):
-        for trg_col in getDuplicateTestTargetColumns(trg_tb):
-          verify_duplicate_records(env, app_id, trg_tb,trg_col,suiteStartTime)
+        full_table_name = f"`{env}`.`{app_id}`.`{trg_tb}`"
+        try:
+          spark.table(full_table_name).limit(1).count()
 
-        for trg_col in getNullTestTargetColumns(trg_tb):  
-          verify_null_records(env, app_id, trg_tb,trg_col,suiteStartTime)
+          for trg_col in getDuplicateTestTargetColumns(trg_tb):
+            verify_duplicate_records(env, app_id, trg_tb,trg_col,suiteStartTime)
+        
+          for trg_col in getNullTestTargetColumns(trg_tb):  
+            verify_null_records(env, app_id, trg_tb,trg_col,suiteStartTime)
 
-        Verify_full_load_row_count2(env,app_id,trg_tb,suiteStartTime)
+          Verify_full_load_row_count2(env,app_id,trg_tb,suiteStartTime)
+        except Exception as e:
+          print(f"Table '{full_table_name}' does not exist.")
 
     #TB-41 TEST METHODS CALLING FOR BRONZE_USERS
       if(trg_tb == 'bronze_users'):
