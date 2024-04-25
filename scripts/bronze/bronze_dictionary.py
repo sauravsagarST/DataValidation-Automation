@@ -19,7 +19,9 @@ dashboard_dict = {
 
     'talentnetwork': ['bronze_candidate','bronze_work_hostory','bronze_attachment','bronze_communication_types','bronze_candidate_subscription','bronze_areaofinterest_candidate','bronze_folder','bronze_folder_candidates','bronze_users','bronze_tags','bronze_tags_candidate'],
 
-    'cws': ['bronze_ga_content','bronze_ga_location','bronze_ga_source','bronze_ga_visitors','bronze_ga4_content','bronze_ga4_location','bronze_ga4_source','bronze_ga4_visitors']
+    'cws': ['bronze_ga_content','bronze_ga_location','bronze_ga_source','bronze_ga_visitors','bronze_ga4_content','bronze_ga4_location','bronze_ga4_source','bronze_ga4_visitors'],
+
+    'contactmessages': ['bronze_sendgrid_event','bronze_communication_log','bronze_communication_template','bronze_campaign','bronze_campaign_rule','bronze_jobalert_client_log','bronze_sms_campaign_data']
 
 }
 
@@ -266,4 +268,9 @@ bronze_work_history_dict = {
     'null_tc': ['work_history_id'],
     'date_column': ['created'],
     'primary_column' : ['work_history_id']
+}
+bronze_sms_campaign_data_dict = {
+    'duplicate_tc': ['twilio_transaction_id'],
+    'null_tc': ['twilio_transaction_id'],
+    'primary_column' : ['twilio_transaction_id']
 }
