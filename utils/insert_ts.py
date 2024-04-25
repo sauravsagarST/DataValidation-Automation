@@ -3,8 +3,7 @@ def insert_query(suiteStartTime,execution_time,test_id,env,testname,source_clien
     
     full_table_name = f"{env}.sfx_analytics.test_output_table"
 
-    query = f"""INSERT INTO TABLE {full_table_name} VALUES ('{suiteStartTime}','{execution_time}','{test_id}','{env}','{testname}','{source_client}','{source_tb}','{target_client}','{target_tb}','{trg_column}','{testQuery}','{test_status}')
-    """
+    query = f"""INSERT INTO TABLE {full_table_name} VALUES('{suiteStartTime}','{execution_time}','{test_id}','{env}','{testname}','{source_client}','{source_tb}','{target_client}','{target_tb}','{trg_column}',"{testQuery}",'{test_status}')"""
    
     spark.sql(query)
     # print(query)
