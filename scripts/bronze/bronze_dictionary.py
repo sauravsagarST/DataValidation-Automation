@@ -15,6 +15,7 @@ googleAnalytics4_GaVisitorsPath = "s3://hodes-external-data/google-analytics4/ar
 googleAnalytics_test_flag = "false"
 
 dashboard_dict = {
+    
     'userinsight': ['bronze_candidate','bronze_folder','bronze_users','bronze_user_logins','bronze_folder_candidates','bronze_user_searches','bronze_folder_candidates_status_log'],
 
     'talentnetwork': ['bronze_candidate','bronze_work_hostory','bronze_attachment','bronze_communication_types','bronze_candidate_subscription','bronze_areaofinterest_candidate','bronze_folder','bronze_folder_candidates','bronze_users','bronze_tags','bronze_tags_candidate'],
