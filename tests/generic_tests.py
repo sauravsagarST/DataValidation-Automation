@@ -99,14 +99,14 @@ def Verify_full_load_row_count2(env,clientName,target_table,suiteStartTime):
 
 # COMMAND ----------
 
-def verify_incremental_duplicate_records(env, clientName, table_name, trg_col, primary_column, maxincrementalValue, minincrementalValue, suiteStartTime):
+def verify_incremental_duplicate_records(env, clientName, table_name, trg_col, primary_column, maxIncrementalValue, minIncrementalValue, suiteStartTime):
 
     full_table_name = f"`{env}`.`{clientName}`.`{table_name}`"
     testQuery = f"""SELECT (CASE WHEN cnt = 0 THEN 'PASS' ELSE 'FAIL' END) AS Test_status FROM ( SELECT COUNT(*) AS cnt FROM (SELECT COUNT(*) FROM {full_table_name} where {primary_column} between {minIncrementalValue} and {maxIncrementalValue} GROUP BY {trg_col} HAVING COUNT(*) > 1))"""
 
     result_df = spark.sql(testQuery)
     test_status = result_df.collect()[0]['Test_status']
-    print(full_table_name+"  Duplicate Records Test for "+trg_col+" Status : "+test_status )
+    print(full_table_name+" Inc. Duplicate Records Test for "+trg_col+" Status : "+test_status )
 
     insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'duplicate_records_incremental',clientName,'','',table_name,trg_col,testQuery,test_status)
 
@@ -114,14 +114,14 @@ def verify_incremental_duplicate_records(env, clientName, table_name, trg_col, p
 
 # COMMAND ----------
 
-def verify_incremental_null_records(env, clientName, table_name, trg_col, primary_column, maxincrementalValue, minincrementalValue, suiteStartTime):
+def verify_incremental_null_records(env, clientName, table_name, trg_col, primary_column, maxIncrementalValue, minIncrementalValue, suiteStartTime):
     full_table_name = f"`{env}`.`{clientName}`.`{table_name}`"
 
     testQuery = f"""SELECT (CASE WHEN count(*) = 0 THEN 'PASS' ELSE 'FAIL' END) AS Test_status FROM {full_table_name} WHERE {primary_column} between {minIncrementalValue} and {maxIncrementalValue} and {trg_col} IS NULL"""
 
     result_df = spark.sql(testQuery)
     test_status = result_df.collect()[0]['Test_status']
-    print(full_table_name+"  Null Records Test for "+trg_col+" Status : "+test_status )
+    print(full_table_name+" Inc. Null Records Test for "+trg_col+" Status : "+test_status )
 
     insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'null_records_incremental',clientName,'','',table_name,trg_col,testQuery,test_status)
     
@@ -129,11 +129,11 @@ def verify_incremental_null_records(env, clientName, table_name, trg_col, primar
 
 # COMMAND ----------
 
-def Verify_incremental_row_count(env, clientName, target_table, primary_column, maxincrementalValue, minincrementalValue, suiteStartTime, date_column):
+def Verify_incremental_row_count(env, clientName, target_table, primary_column, maxIncrementalValue, minIncrementalValue, suiteStartTime, date_column):
 
     full_table_name = f"`{env}`.`{clientName}`.`{target_table}`"
 
-    dbricksQuery = f"""select count(*) as row_count from {full_table_name} where {primary_column} between {minincrementalValue} and {maxincrementalValue}
+    dbricksQuery = f"""select count(*) as row_count from {full_table_name} where {primary_column} between {minIncrementalValue} and {maxIncrementalValue}
     """
     dbricksResult = spark.sql(dbricksQuery)
     dbricksCount = dbricksResult.collect()[0]['row_count'] 
@@ -142,7 +142,7 @@ def Verify_incremental_row_count(env, clientName, target_table, primary_column, 
     mySql_df.createOrReplaceTempView("mysql_table")
 
     # Run SQL queries against the temporary view
-    mySqlQuery = f"""SELECT count(*) as row_count FROM mysql_table where {primary_column} between {minincrementalValue} and {maxincrementalValue}
+    mySqlQuery = f"""SELECT count(*) as row_count FROM mysql_table where {primary_column} between {minIncrementalValue} and {maxIncrementalValue}
     """
     sqlResult = spark.sql(mySqlQuery)
     mySqlCount = sqlResult.collect()[0]['row_count']
@@ -150,11 +150,11 @@ def Verify_incremental_row_count(env, clientName, target_table, primary_column, 
     failCounts = ""
     if(dbricksCount == mySqlCount):
         test_status = "PASS"
-        print("Incremental Load Row Count Test between "+target_table+" and "+ source_table+" Status : "+test_status)
+        print("Inc. Load Row Count Test between "+target_table+" and "+ source_table+" Status : "+test_status)
     else:
         test_status = "FAIL"
         failCounts = "Databricks Count(" +str(dbricksCount)+")  MySql Count("+str(mySqlCount)+")"
-        print("Incremantal Row Count Test between "+target_table+" and "+ source_table+" Status : "+test_status+ ", " +failCounts)
+        print("Inc. Row Count Test between "+target_table+" and "+ source_table+" Status : "+test_status+ ", " +failCounts)
 
     insert_query(suiteStartTime,getCurrentTime(),getTestId(),env,'incremental_row_count',clientName,source_table,failCounts,target_table,'','Databricks Query: '+dbricksQuery+' My Sql Query: '+mySqlQuery,test_status)
 
