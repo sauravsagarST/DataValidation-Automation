@@ -3,9 +3,12 @@
 
 # COMMAND ----------
 
-env = dbutils.widgets.get("Environment")
-groupId = dbutils.widgets.get("group_id")
-runType = dbutils.widgets.get("RunType")
+# env = dbutils.widgets.get("Environment")
+# groupId = dbutils.widgets.get("group_id")
+# runType = dbutils.widgets.get("RunType")
+env = "prod"
+groupId = "106"
+runType = "incremental"
 client_list = getClientListByGroup(groupId,env)
 
 suiteStartTime = getCurrentTime()

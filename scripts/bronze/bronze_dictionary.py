@@ -1,3 +1,4 @@
+# Databricks notebook source
 mySqlHost_cert = "jdbc:mysql://cert-xcloud-for-upgrade.ceq12wejj76d.us-east-1.rds.amazonaws.com"
 mySqlHost_prod = "jdbc:mysql://prod-xcloud-aurora-57-new.coc65bxwymxu.us-west-1.rds.amazonaws.com"
 
@@ -275,3 +276,4 @@ bronze_sms_campaign_data_dict = {
     'null_tc': ['twilio_transaction_id'],
     'primary_column' : ['twilio_transaction_id']
 }
+
