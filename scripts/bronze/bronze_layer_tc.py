@@ -53,7 +53,7 @@ for trg_tb in trg_table_list:
     for trg_col in getNullTestTargetColumns(trg_tb):  
       verify_null_records(env, app_id, trg_tb,trg_col,suiteStartTime)
 
-    Verify_full_load_row_count(env,app_id,trg_tb,suiteStartTime,getDateColumn(trg_tb))
+    Verify_full_load_row_count2(env,app_id,trg_tb,suiteStartTime)
 
   # verifying table BRONZE_USERS
   if(trg_tb == 'bronze_users'):
@@ -83,7 +83,7 @@ for trg_tb in trg_table_list:
     for trg_col in getNullTestTargetColumns(trg_tb):  
       verify_null_records(env, app_id, trg_tb,trg_col,suiteStartTime)
 
-    Verify_full_load_row_count(env,app_id,trg_tb,suiteStartTime,getDateColumn(trg_tb))
+    Verify_full_load_row_count2(env,app_id,trg_tb,suiteStartTime)
 
   # verifying table BRONZE_FOLDER_CANDIDATE_STATUS_LOG
   if(trg_tb == 'bronze_folder_candidates_status_log'):
